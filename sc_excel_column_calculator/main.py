@@ -23,7 +23,7 @@
 import logging
 
 from sc_utilities import Singleton
-from sc_utilities import log_init
+from sc_utilities import log_init, calculate_column_index
 
 log_init()
 
@@ -41,26 +41,9 @@ class Runner(metaclass=Singleton):
         logging.getLogger(__name__).info("arguments {}".format(args))
         logging.getLogger(__name__).info("program {} version {}".format(PROJECT_NAME, __version__))
         column = args.column
-        column_index = self._calculate_column_index(column)
-        print(column_index)
+        column_index = calculate_column_index(column)
         logging.getLogger(__name__).info("column index {}".format(column_index))
         return 0
-
-    def _calculate_column_index(self, column: str) -> int:
-        if column is None or len(column) == 0:
-            return -1
-        column_name = column.upper()
-        column_letter_stack = list()
-        for letter in column_name:
-            column_letter_stack.append(ord(letter) - self._ASCII_A + 1)
-
-        result = 0
-        level = 1
-        while len(column_letter_stack) > 0:
-            ascii_value = column_letter_stack.pop()
-            result += ascii_value * level
-            level = level * 26
-        return result
 
 
 def main():
