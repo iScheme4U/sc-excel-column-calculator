@@ -27,7 +27,6 @@ from sc_utilities import log_init
 
 log_init()
 
-from sc_config import ConfigUtils
 from sc_excel_column_calculator import PROJECT_NAME, __version__
 import argparse
 import re
@@ -36,15 +35,11 @@ import re
 class Runner(metaclass=Singleton):
 
     def __init__(self):
-        project_name = PROJECT_NAME
-        ConfigUtils.clear(project_name)
-        self._config = ConfigUtils.get_config(project_name)
         self._ASCII_A = ord('A')
 
     def run(self, *, args):
         logging.getLogger(__name__).info("arguments {}".format(args))
         logging.getLogger(__name__).info("program {} version {}".format(PROJECT_NAME, __version__))
-        logging.getLogger(__name__).debug("configurations {}".format(self._config.as_dict()))
         column = args.column
         column_index = self._calculate_column_index(column)
         print(column_index)
