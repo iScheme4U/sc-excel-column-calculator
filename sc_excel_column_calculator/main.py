@@ -30,6 +30,7 @@ log_init()
 from sc_config import ConfigUtils
 from sc_excel_column_calculator import PROJECT_NAME, __version__
 import argparse
+import re
 
 
 class Runner(metaclass=Singleton):
@@ -38,18 +39,44 @@ class Runner(metaclass=Singleton):
         project_name = PROJECT_NAME
         ConfigUtils.clear(project_name)
         self._config = ConfigUtils.get_config(project_name)
+        self._ASCII_A = ord('A')
 
     def run(self, *, args):
         logging.getLogger(__name__).info("arguments {}".format(args))
         logging.getLogger(__name__).info("program {} version {}".format(PROJECT_NAME, __version__))
         logging.getLogger(__name__).debug("configurations {}".format(self._config.as_dict()))
+        column = args.column
+        column_index = self._calculate_column_index(column)
+        print(column_index)
+        logging.getLogger(__name__).info("column index {}".format(column_index))
         return 0
+
+    def _calculate_column_index(self, column: str) -> int:
+        if column is None or len(column) == 0:
+            return -1
+        column_name = column.upper()
+        column_letter_stack = list()
+        for letter in column_name:
+            column_letter_stack.append(ord(letter) - self._ASCII_A + 1)
+
+        result = 0
+        level = 1
+        while len(column_letter_stack) > 0:
+            ascii_value = column_letter_stack.pop()
+            result += ascii_value * level
+            level = level * 26
+        return result
 
 
 def main():
     try:
         parser = argparse.ArgumentParser(description='Python project')
+        parser.add_argument('column', help='Column letter')
         args = parser.parse_args()
+        if re.match(r'^[a-zA-Z]+$', args.column) is None:
+            print("bad input, alpha characters only")
+            logging.getLogger(__name__).exception('bad input, alpha characters only')
+            return 2
         state = Runner().run(args=args)
     except Exception as e:
         logging.getLogger(__name__).exception('An error occurred.', exc_info=e)
