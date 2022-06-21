@@ -1,6 +1,6 @@
-.. image:: https://badge.fury.io/py/sc-python-templates.svg
-    :target: https://badge.fury.io/py/sc-python-templates
-.. image:: https://img.shields.io/pypi/pyversions/sc-python-templates
+.. image:: https://badge.fury.io/py/sc-excel-column-calculator.svg
+    :target: https://badge.fury.io/py/sc-excel-column-calculator
+.. image:: https://img.shields.io/pypi/pyversions/sc-excel-column-calculator
     :alt: PyPI - Python Version
 
 A simple Python project
@@ -14,7 +14,7 @@ Installation
 
 It is possible to install the tool with `pip`::
 
-    pip install sc-python-templates
+    pip install sc-excel-column-calculator
 
 Configuration
 -------------
