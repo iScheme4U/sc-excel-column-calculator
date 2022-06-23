@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 PROJECT_NAME = 'sc-excel-column-calculator'

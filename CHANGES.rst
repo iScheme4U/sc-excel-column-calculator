@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v0.0.5 (20220623)
+----------------------
+
+- update sc-utilities dependency to fix bug
+
 v0.0.4 (20220623)
 ----------------------
 

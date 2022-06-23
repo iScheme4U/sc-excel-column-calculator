@@ -76,7 +76,7 @@ setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'sc-utilities>=0.0.10',
+        'sc-utilities>=0.0.11',
     ],
     package_data={
         'sc_excel_column_calculator': ['tests/sample_config/*'],
