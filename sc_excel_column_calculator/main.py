@@ -30,6 +30,7 @@ log_init()
 from sc_excel_column_calculator import PROJECT_NAME, __version__
 import argparse
 import re
+import json
 
 
 class Runner(metaclass=Singleton):
@@ -37,29 +38,33 @@ class Runner(metaclass=Singleton):
     def run(self, *, args):
         logging.getLogger(__name__).info("arguments {}".format(args))
         logging.getLogger(__name__).info("program {} version {}".format(PROJECT_NAME, __version__))
-        column = args.column
+        columns = args.columns
+        column_pairs = dict()
         if args.reverse:
-            if re.match(r'^[1-9][0-9]+$', args.column) is None:
-                logging.getLogger(__name__).exception('bad input, numeric characters only')
-                raise ValueError("bad input, numeric characters only")
-            value = int(column)
-            column_name = calculate_column_name_from_index(value)
-            logging.getLogger(__name__).info(
-                "the corresponding column name of index {} is {}".format(column, column_name))
+            for column in columns:
+                if re.match(r'^[0-9]|[1-9][0-9]+$', column) is None:
+                    logging.getLogger(__name__).exception('bad input {}, numeric characters only'.format(column))
+                    continue
+                value = int(column)
+                column_name = calculate_column_name_from_index(value)
+                column_pairs[value] = column_name
         else:
-            if re.match(r'^[a-zA-Z]+$', args.column) is None:
-                logging.getLogger(__name__).exception('bad input, alpha characters only')
-                raise ValueError("bad input, alpha characters only")
-            column_index = calculate_column_index(column)
-            logging.getLogger(__name__).info(
-                "the corresponding column index of name {} is {}".format(column, column_index))
+            for column in columns:
+                if re.match(r'^[a-zA-Z]+$', column) is None:
+                    logging.getLogger(__name__).exception('bad input {}, alpha characters only'.format(column))
+                    continue
+                column_index = calculate_column_index(column)
+                column_pairs[column] = column_index
+        json_str = json.dumps(column_pairs, indent=2)
+        logging.getLogger(__name__).info("column pairs {}".format(json_str))
         return 0
 
 
 def main():
     try:
         parser = argparse.ArgumentParser(description='Python project')
-        parser.add_argument('column', help='Column letter')
+        parser.add_argument('columns', metavar='N', nargs='+',
+                            help='Columns: a list of column letters or column indexes')
         parser.add_argument("--reverse", action='store_true', default=False,
                             help="if calculate column name from column index")
         args = parser.parse_args()
