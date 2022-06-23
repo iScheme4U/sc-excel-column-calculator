@@ -23,7 +23,7 @@
 import logging
 
 from sc_utilities import Singleton
-from sc_utilities import log_init, calculate_column_index
+from sc_utilities import log_init, calculate_column_index, calculate_column_name_from_index
 
 log_init()
 
@@ -34,15 +34,25 @@ import re
 
 class Runner(metaclass=Singleton):
 
-    def __init__(self):
-        self._ASCII_A = ord('A')
-
     def run(self, *, args):
         logging.getLogger(__name__).info("arguments {}".format(args))
         logging.getLogger(__name__).info("program {} version {}".format(PROJECT_NAME, __version__))
         column = args.column
-        column_index = calculate_column_index(column)
-        logging.getLogger(__name__).info("column index {}".format(column_index))
+        if args.reverse:
+            if re.match(r'^[1-9][0-9]+$', args.column) is None:
+                logging.getLogger(__name__).exception('bad input, numeric characters only')
+                raise ValueError("bad input, numeric characters only")
+            value = int(column)
+            column_name = calculate_column_name_from_index(value)
+            logging.getLogger(__name__).info(
+                "the corresponding column name of index {} is {}".format(column, column_name))
+        else:
+            if re.match(r'^[a-zA-Z]+$', args.column) is None:
+                logging.getLogger(__name__).exception('bad input, alpha characters only')
+                raise ValueError("bad input, alpha characters only")
+            column_index = calculate_column_index(column)
+            logging.getLogger(__name__).info(
+                "the corresponding column index of name {} is {}".format(column, column_index))
         return 0
 
 
@@ -50,11 +60,9 @@ def main():
     try:
         parser = argparse.ArgumentParser(description='Python project')
         parser.add_argument('column', help='Column letter')
+        parser.add_argument("--reverse", action='store_true', default=False,
+                            help="if calculate column name from column index")
         args = parser.parse_args()
-        if re.match(r'^[a-zA-Z]+$', args.column) is None:
-            print("bad input, alpha characters only")
-            logging.getLogger(__name__).exception('bad input, alpha characters only')
-            return 2
         state = Runner().run(args=args)
     except Exception as e:
         logging.getLogger(__name__).exception('An error occurred.', exc_info=e)

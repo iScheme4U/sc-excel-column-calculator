@@ -1,7 +1,13 @@
 Changelog
 =========
 
-v0.0.3 (20220624)
+v0.0.4 (20220623)
+----------------------
+
+- update sc-utilities dependency
+- add calculate_column_name_from_index
+
+v0.0.3 (20220623)
 ----------------------
 
 - update sc-utilities dependency
